@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block head %}
+<title>News</title>
+{% endblock %}
+{% block body %}
+<h1 style="text-align:center;">Jaunumi</h1>
+
+{% if session.get('user_id') %}
+
+<!--CREATE NEWS-->
+	<div style="display:flex; justify-content:center; margin: 16px 0;">
+	<button id="create-table-btn" style="padding: 12px; background-color: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 1em;">Izveidot Jaunumu</button>
+	</div>
+
+
+
+
+	<div id="create-form" style="display:none; margin: 0 20px 18px 20px; border-radius:10px; padding:12px;">
+	<form action="{{ url_for('jaunumi') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:10px;">
+	<input type="text" name="title" placeholder="Title / Tituls" required>
+	<textarea name="content" placeholder="Context / Saturs" rows="4"></textarea>
+
+	<input type="file" id="image-input" name="image" accept="image/*">
+
+	<p id="paste-hint" style="font-size: 0.9em; color: var(--muted); margin: 0;">Attēlus var ielīmēt, izmantojot CTRL+V</p>
+	<div style="display:flex; gap:10px; justify-content:flex-end;">
+	<button type="submit" class="btn-action">Izveidot</button>
+	<button type="button" id="cancel-create" class="btn btn-ghost">Atcelt</button>
+	</div>
+	</form>
+	</div>
+{% endif %}
+
+{% if news and news|length > 0 %}
+	<div style="display: flex; flex-direction: column; gap: 16px; padding: 0 10px;">
+	{% for item in news %}
+		<div style="background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: box-shadow 0.2s; min-width: 0;" class="news-item">
+			<a href="{{ url_for('view_news', id=item.id) }}" style="display: flex; text-decoration: none; color: inherit; gap: 16px; padding: 16px; min-width: 0;">
+				{% if item.image %}
+				<div style="flex-shrink: 0;">
+					<img src="{{ url_for('static', filename='images/jaunumi/' + item.image) }}" alt="{{ item.title }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px;">
+				</div>
+				{% endif %}
+				<div style="flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+					<h3 style="margin: 0 0 8px 0; font-size: 1.15em; color: var(--primary); font-weight: 700; word-wrap: break-word; overflow-wrap: break-word;">{{ item.title }}</h3>
+					<p style="margin: 0 0 10px 0; color: var(--text); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ item.content or '(No description)' }}</p>
+					<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+						{% if item.author %}
+							{% if item.author.profile_pic %}
+							<img src="{{ url_for('static', filename='images/profiles/' + item.author.profile_pic) }}" alt="{{ item.author.username }}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+							{% else %}
+							<div style="width: 24px; height: 24px; border-radius: 50%; background-color: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7em; font-weight: bold;">{{ item.author.username[0].upper() }}</div>
+							{% endif %}
+							<span style="color: var(--text); font-size: 0.9em; font-weight: 500;">{{ item.author.username }}</span>
+						{% endif %}
+					</div>
+					<p style="margin: 0; color: var(--muted); font-size: 0.9em;">{{ item.date_created.strftime('%Y-%m-%d') }}</p>
+				</div>
+			</a>
+			{% if session.get('role') == 'administrator' or (session.get('user_id') and item.user_id == session.get('user_id')) %}
+			<div style="display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border);">
+				<a href="{{ url_for('edit_news', id=item.id) }}" style="color: var(--primary); text-decoration: none; padding: 6px 12px; border-radius: 4px; background-color: rgba(59, 130, 246, 0.1); font-size: 0.9em;">Rediģēt</a>
+				<a href="{{ url_for('delete_news', id=item.id) }}" onclick="return confirm('Vēlaties dzēst šo jaunumu?');" style="color: #ef4444; text-decoration: none; padding: 6px 12px; border-radius: 4px; background-color: rgba(239, 68, 68, 0.1); font-size: 0.9em;">Dzēst</a>
+			</div>
+			{% endif %}
+		</div>
+	{% endfor %}
+		</div>
+	{% else %}
+		<div style="text-align:center; color:var(--muted); margin-top:18px;">No news yet.</div>
+	{% endif %}
+
+<script>
+	(function (){
+	const btn = document.getElementById('create-table-btn');
+	const form = document.getElementById('create-form');
+	const cancel = document.getElementById('cancel-create');
+	const imageInput = document.getElementById('image-input');
+	const pasteHint = document.getElementById('paste-hint');
+	
+	if (!btn || !form) return;
+	btn.addEventListener('click', function(){ form.style.display = 'block'; btn.style.display = 'none'; window.scrollTo({ top: form.offsetTop-20, behavior: 'smooth' }); });
+	if (cancel) cancel.addEventListener('click', function(){ form.style.display = 'none'; btn.style.display = 'inline-flex'; });
+	
+	// Clipboard paste functionality
+	if (imageInput) {
+		document.addEventListener('paste', function(e) {
+			// Only handle paste if form is visible and not focused on text input
+			if (form.style.display === 'none') return;
+			
+			const items = e.clipboardData?.items;
+			if (!items) return;
+			
+			for (let item of items) {
+				if (item.type.indexOf('image') !== -1) {
+					e.preventDefault();
+					const blob = item.getAsFile();
+					const dataTransfer = new DataTransfer();
+					dataTransfer.items.add(new File([blob], 'pasted-image.png', { type: blob.type }));
+					imageInput.files = dataTransfer.files;
+					pasteHint.textContent = '✓ Image pasted from clipboard';
+					pasteHint.style.color = 'var(--primary)';
+					break;
+				}
+			}
+		});
+	}
+	})();
+</script>
+{% endblock %}

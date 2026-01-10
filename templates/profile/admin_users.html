@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Admin Panel</title>
+{% endblock %}
+
+{% block body %}
+<div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
+    <h1 style="text-align: center; margin-bottom: 30px;">Admin Panel</h1>
+
+    {% if error %}
+    <div style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div style="background-color: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+        {{ success }}
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+        <!-- Create New User Form -->
+        <div style="background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 25px;">
+            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.3em;">Izveidot jaunu lietotāju</h2>
+            
+            <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="hidden" name="action" value="create">
+                
+                <div>
+                    <label for="new-username" style="display: block; margin-bottom: 5px; font-weight: 500;">Username:</label>
+                    <input type="text" id="new-username" name="username" required style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="new-email" style="display: block; margin-bottom: 5px; font-weight: 500;">Email (optional):</label>
+                    <input type="email" id="new-email" name="email" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="new-password" style="display: block; margin-bottom: 5px; font-weight: 500;">Password:</label>
+                    <input type="password" id="new-password" name="password" required style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="new-role" style="display: block; margin-bottom: 5px; font-weight: 500;">Role:</label>
+                    <select id="new-role" name="role" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                        <option value="user">User</option>
+                        <option value="administrator">Administrator</option>
+                    </select>
+                </div>
+
+                <button type="submit" style="padding: 12px; background-color: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 1em;">Izveidot Lietotāju</button>
+            </form>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 25px;">
+            <h2 style="margin-top: 0; margin-bottom: 20px; font-size: 1.3em;">Ātrās Darbības</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{{ url_for('index') }}" style="padding: 12px 16px; background-color: rgba(59, 130, 246, 0.1); color: var(--primary); text-decoration: none; border-radius: 4px; text-align: center; font-weight: 500;">Back to Home</a>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <h3 style="margin: 0 0 10px 0; font-size: 0.95em; color: var(--muted);">Kopējais lietotāju skaits: {{ users|length }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div style="background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+        <div style="padding: 20px 25px; border-bottom: 1px solid var(--border);">
+            <h2 style="margin: 0; font-size: 1.3em;">Visi Lietotāji</h2>
+        </div>
+
+        {% if users %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: var(--surface); border-bottom: 1px solid var(--border);">
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600;">ID</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600;">Username</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600;">Email</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600;">Role</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 12px 15px; color: var(--muted);">{{ user.id }}</td>
+                        <td style="padding: 12px 15px; font-weight: 500;">
+                            {{ user.username }}
+                            {% if user.role == 'administrator' %}<span style="margin-left: 8px; padding: 2px 8px; background-color: var(--primary); color: white; border-radius: 3px; font-size: 0.8em; font-weight: 600;">ADMIN</span>{% endif %}
+                        </td>
+                        <td style="padding: 12px 15px; color: var(--text);">{{ user.email or '—' }}</td>
+                        <td style="padding: 12px 15px; color: var(--muted);">{% if user.role == 'administrator' %}Administrator{% else %}User{% endif %}</td>
+                        <td style="padding: 12px 15px;">
+                            <button type="button" onclick="openEditForm({{ user.id }}, '{{ user.username|replace("'", "\\'") }}', '{{ user.email|replace("'", "\\'") or '' }}', '{{ user.role }}')" style="padding: 6px 12px; background-color: rgba(59, 130, 246, 0.1); color: var(--primary); border: none; border-radius: 3px; cursor: pointer; font-size: 0.9em; font-weight: 500; margin-right: 6px;">Edit</button>
+                            {% if user.role != 'administrator' %}
+                            <button type="button" onclick="deleteUser({{ user.id }}, '{{ user.username|replace("'", "\\'") }}')" style="padding: 6px 12px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: none; border-radius: 3px; cursor: pointer; font-size: 0.9em; font-weight: 500;">Delete</button>
+                            <form id="delete-form-{{ user.id }}" method="POST" style="display: none;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: 40px; text-align: center; color: var(--muted);">
+            No users found.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="edit-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background-color: var(--card); border-radius: 8px; padding: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <h2 style="margin-top: 0; margin-bottom: 20px;">Edit User</h2>
+            
+            <form id="edit-form" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="hidden" name="action" value="edit">
+                <input type="hidden" id="edit-user-id" name="user_id">
+                
+                <div>
+                    <label for="edit-username" style="display: block; margin-bottom: 5px; font-weight: 500;">Username:</label>
+                    <input type="text" id="edit-username" name="username" required style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="edit-email" style="display: block; margin-bottom: 5px; font-weight: 500;">Email:</label>
+                    <input type="email" id="edit-email" name="email" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="edit-password" style="display: block; margin-bottom: 5px; font-weight: 500;">New Password (leave blank to keep current):</label>
+                    <input type="password" id="edit-password" name="password" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                </div>
+
+                <div>
+                    <label for="edit-role" style="display: block; margin-bottom: 5px; font-weight: 500;">Role:</label>
+                    <select id="edit-role" name="role" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; background-color: var(--surface); color: var(--text); box-sizing: border-box;">
+                        <option value="user">User</option>
+                        <option value="administrator">Administrator</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" style="flex: 1; padding: 12px; background-color: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Save Changes</button>
+                    <button type="button" onclick="closeEditForm()" style="flex: 1; padding: 12px; background-color: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-weight: 500;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEditForm(userId, username, email, role) {
+    document.getElementById('edit-user-id').value = userId;
+    document.getElementById('edit-username').value = username;
+    document.getElementById('edit-email').value = email;
+    document.getElementById('edit-role').value = role;
+    document.getElementById('edit-password').value = '';
+    document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function closeEditForm() {
+    document.getElementById('edit-modal').style.display = 'none';
+}
+
+function deleteUser(userId, username) {
+    if(confirm('Delete user ' + username + '?')) {
+        document.getElementById('delete-form-' + userId).submit();
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeEditForm();
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!--W3Schools site layout reference-->
+    <style>
+        .site-footer {
+            margin-top: 40px;
+            padding: 24px;
+            background-color: var(--surface, #f5f5f5);
+            border-top: 1px solid var(--border, #ddd);
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .footer-col {
+            flex: 1 1 220px;
+            min-width: 200px;
+        }
+        .footer-title {
+            margin: 0 0 8px 0;
+            font-weight: 700;
+        }
+        .footer-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 6px;
+        }
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .footer-meta {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+        /* Profile Dropdown */
+        .profile-menu {
+            position: relative;
+        }
+        .profile-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border, #ddd);
+            background: var(--surface, #f5f5f5);
+            color: var(--text, #e6eef6);
+            cursor: pointer;
+        }
+        .profile-toggle:hover {
+            background: rgba(255,255,255,0.08); /* subtle overlay that works on dark */
+            color: var(--text, #e6eef6);
+        }
+        .profile-toggle .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            min-width: 190px;
+            background: var(--surface, #111);
+            border: 1px solid var(--border, #ddd);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 6px 0;
+            display: none;
+            z-index: 20;
+            color: var(--text, #e6eef6);
+        }
+        .profile-dropdown.show {
+            display: block;
+        }
+        .profile-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            color: var(--text, #e6eef6);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .profile-dropdown a:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--text, #e6eef6);
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="top-controls">
+        <!-- Language selector - commented out for now
+        <div class="lang-select" id="lang-select">
+            <button id="lang-btn" class="theme-btn" aria-haspopup="true" aria-expanded="false">EN ▾</button>
+            <div class="lang-dropdown" id="lang-dropdown" role="menu" aria-hidden="true">
+                <button class="lang-option" data-lang="LV" role="menuitem">LV</button>
+                <button class="lang-option" data-lang="EN" role="menuitem">EN</button>
+                <button class="lang-option" data-lang="GER" role="menuitem">GER</button>
+            </div>
+        </div>
+        -->
+
+        <div class="theme-toggle">
+            <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🌙</button>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div aria-label="Home">
+            <a href="/" class="nav-link {{ 'active' if request.path == '/' else ''}}">Home</a>
+        </div>
+
+        <nav class="primary-nav" aria-label="Site pages">
+            <div class="nav-inner">
+                <a href="/" class="nav-link {{ 'active' if request.path == '/' else ''}}">Home</a>
+                <a href="/jaunumi" class="nav-link {{ 'active' if request.path == '/jaunumi' else ''}}">News</a>
+            </div>
+        </nav>
+
+        <div class="header-actions">
+            {% if session.get('username') %}
+                <div class="profile-menu" id="profile-menu">
+                    <button id="profile-menu-toggle" class="profile-toggle" aria-haspopup="true" aria-expanded="false">
+                        {% if session.get('profile_pic') %}
+                            <img src="{{ url_for('static', filename='images/profiles/' + session['profile_pic']) }}" alt="avatar" class="avatar" />
+                        {% endif %}
+                        <span class="username">{{ session['username'] }}</span>
+                    </button>
+                    <div id="profile-menu-dropdown" class="profile-dropdown" role="menu" aria-hidden="true">
+                        <a href="{{ url_for('settings') }}" role="menuitem">Profile</a>
+                        {% if session.get('role') == 'administrator' %}
+                        <a href="{{ url_for('admin_users') }}" role="menuitem">Admin Panel</a>
+                        {% endif %}
+                        <a href="{{ url_for('settings') }}" role="menuitem">Settings</a>
+                        <a href="{{ url_for('logout') }}" role="menuitem">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/login" class="btn btn-ghost {{ 'active' if request.path == '/login' else ''}}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="page-wrapper">
+        <main class="content main-content">
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+
+    <!--Footer-->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h3 class="footer-title">Footer</h3>
+                <ul class="footer-list">
+                    <li>Add your contact details here.</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Links</h3>
+                <ul class="footer-list">
+                    <li><a class="footer-link" href="#">Placeholder link</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-inner" style="margin-top: 12px; border-top: 1px solid var(--border, #ddd); padding-top: 12px;">
+            <div class="footer-meta">© {{ datetime.utcnow().year }}</div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle: store 'light' class on body when user chooses light theme
+        (function () {
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle');
+            const saved = localStorage.getItem('site-theme');
+
+            function isLight() {
+                return body.classList.contains('light');
+            }
+
+            function applySaved() {
+                if (saved === 'light') body.classList.add('light');
+                if (saved === 'dark') body.classList.remove('light');
+                updateIcon();
+            }
+
+            function updateIcon() {
+                btn.textContent = isLight() ? '☀️' : '🌙';
+                btn.setAttribute('aria-pressed', isLight());
+            }
+
+            btn.addEventListener('click', function () {
+                body.classList.toggle('light');
+                localStorage.setItem('site-theme', isLight() ? 'light' : 'dark');
+                updateIcon();
+            });
+
+            applySaved();
+
+            // --------- nav dropdowns: click-to-open, close on outside click ---------
+            // dropdown nav removed
+
+            // --------- language selector behavior (LV / EN / GER) ----------
+            const langBtn = document.getElementById('lang-btn');
+            const langDropdown = document.getElementById('lang-dropdown');
+            const langOptions = document.querySelectorAll('.lang-option');
+            let currentLang = localStorage.getItem('site-lang') || 'EN';
+
+            function updateLangUI() {
+                if (langBtn) langBtn.textContent = currentLang + ' ▾';
+                if (langDropdown) {
+                    // visually mark the active choice
+                    langOptions.forEach(opt => {
+                        opt.classList.toggle('active', opt.dataset.lang === currentLang);
+                    });
+                }
+            }
+
+            if (langBtn) {
+                langBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isShown = langDropdown.classList.contains('show');
+                    langDropdown.classList.toggle('show', !isShown);
+                    langBtn.setAttribute('aria-expanded', String(!isShown));
+                    langDropdown.setAttribute('aria-hidden', String(isShown));
+                });
+            }
+
+            langOptions.forEach(opt => {
+                opt.addEventListener('click', function (e) {
+                    const chosen = this.dataset.lang;
+                    currentLang = chosen;
+                    localStorage.setItem('site-lang', currentLang);
+                    updateLangUI();
+                    langDropdown.classList.remove('show');
+                    langBtn.setAttribute('aria-expanded', 'false');
+                    langDropdown.setAttribute('aria-hidden', 'true');
+                });
+            });
+
+            // close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.lang-select')) {
+                    langDropdown.classList.remove('show');
+                    if (langBtn) langBtn.setAttribute('aria-expanded', 'false');
+                    if (langDropdown) langDropdown.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            // initialize language UI
+            updateLangUI();
+            
+            // profile dropdown behavior
+            const profileMenu = document.getElementById('profile-menu');
+            const profileToggle = document.getElementById('profile-menu-toggle');
+            const profileDropdown = document.getElementById('profile-menu-dropdown');
+
+            function setProfileOpen(open) {
+                if (!profileDropdown || !profileToggle) return;
+                profileDropdown.classList.toggle('show', open);
+                profileDropdown.setAttribute('aria-hidden', String(!open));
+                profileToggle.setAttribute('aria-expanded', String(open));
+            }
+
+            if (profileToggle && profileDropdown) {
+                profileToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isOpen = profileDropdown.classList.contains('show');
+                    setProfileOpen(!isOpen);
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!e.target.closest('#profile-menu')) {
+                        setProfileOpen(false);
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
