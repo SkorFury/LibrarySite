@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>My Reservations - Library</title>
+<style>
+    .reservations-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .section {
+        margin-bottom: 40px;
+    }
+    .reservation-card {
+        background: var(--surface, #f5f5f5);
+        border: 1px solid var(--border, #ddd);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+    .reservation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+    }
+    .book-title {
+        font-size: 1.2em;
+        font-weight: 700;
+        color: var(--text, #e6eef6);
+    }
+    .book-author {
+        color: var(--muted, #888);
+        margin-bottom: 8px;
+    }
+    .reservation-info {
+        font-size: 0.9em;
+        color: var(--muted, #888);
+        margin-bottom: 4px;
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .status-fulfilled {
+        background: #d4edda;
+        color: #155724;
+    }
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        margin-top: 12px;
+        margin-right: 8px;
+    }
+    .btn-primary {
+        background: var(--primary, #007bff);
+        color: white;
+    }
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="reservations-container">
+    <h1>My Reservations</h1>
+    
+    <div class="section">
+        <h2>Active Reservations</h2>
+        {% if pending_reservations %}
+            {% for reservation in pending_reservations %}
+            <div class="reservation-card">
+                <div class="reservation-header">
+                    <div>
+                        <div class="book-title">{{ reservation.book.title }}</div>
+                        <div class="book-author">by {{ reservation.book.author }}</div>
+                    </div>
+                    <span class="status-badge status-pending">PENDING</span>
+                </div>
+                <div class="reservation-info">Reserved: {{ reservation.reservation_date.strftime('%Y-%m-%d') }}</div>
+                {% if reservation.expiry_date %}
+                <div class="reservation-info">Expires: {{ reservation.expiry_date.strftime('%Y-%m-%d') }}</div>
+                {% endif %}
+                <div class="reservation-info">Available copies: {{ reservation.book.copies_available }} / {{ reservation.book.copies_total }}</div>
+                
+                <a href="{{ url_for('library.view_book', id=reservation.book.id) }}" class="btn btn-primary">View Book</a>
+                <form method="POST" action="{{ url_for('library.cancel_reservation', id=reservation.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Cancel this reservation?')">Cancel Reservation</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>You have no active reservations.</p>
+        {% endif %}
+    </div>
+    
+    <div class="section">
+        <h2>Reservation History</h2>
+        {% if past_reservations %}
+            {% for reservation in past_reservations %}
+            <div class="reservation-card">
+                <div class="reservation-header">
+                    <div>
+                        <div class="book-title">{{ reservation.book.title }}</div>
+                        <div class="book-author">by {{ reservation.book.author }}</div>
+                    </div>
+                    <span class="status-badge status-{{ reservation.status }}">{{ reservation.status.upper() }}</span>
+                </div>
+                <div class="reservation-info">Reserved: {{ reservation.reservation_date.strftime('%Y-%m-%d') }}</div>
+                <a href="{{ url_for('library.view_book', id=reservation.book.id) }}" class="btn btn-primary">View Book</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No reservation history.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

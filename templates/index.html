@@ -1,10 +1,95 @@
 {% extends "base.html" %}
 
 {% block head %}
-<title>Home</title>
+<title>Home - Library System</title>
+<style>
+    .hero {
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--surface, #f5f5f5);
+        border-radius: 12px;
+        margin-bottom: 40px;
+    }
+    .hero h1 {
+        font-size: 3em;
+        margin-bottom: 16px;
+        color: var(--text, #e6eef6);
+    }
+    .hero p {
+        font-size: 1.3em;
+        color: var(--muted, #888);
+        margin-bottom: 32px;
+    }
+    .cta-button {
+        display: inline-block;
+        padding: 14px 32px;
+        background: var(--primary, #007bff);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.1em;
+        transition: background 0.2s;
+    }
+    .cta-button:hover {
+        background: var(--primary-dark, #0056b3);
+    }
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-top: 40px;
+    }
+    .feature-card {
+        background: var(--surface, #f5f5f5);
+        border: 1px solid var(--border, #ddd);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+    }
+    .feature-icon {
+        font-size: 3em;
+        margin-bottom: 16px;
+    }
+    .feature-title {
+        font-size: 1.3em;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text, #e6eef6);
+    }
+    .feature-desc {
+        color: var(--muted, #888);
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-<h1>Welcome</h1>
-<p>Welcome to WebPageDB</p>
+<div class="hero">
+    <h1>📚 Library Management System</h1>
+    <p>Browse, borrow, and manage books easily</p>
+    <a href="{{ url_for('library.index') }}" class="cta-button">Browse Library Catalog</a>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <div class="feature-title">Browse Books</div>
+        <div class="feature-desc">Search and explore our extensive collection of books</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <div class="feature-title">Borrow Books</div>
+        <div class="feature-desc">Easily borrow books with a 14-day loan period</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔖</div>
+        <div class="feature-title">Reserve Books</div>
+        <div class="feature-desc">Reserve books when they're currently unavailable</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Track Loans</div>
+        <div class="feature-desc">View your active loans and borrowing history</div>
+    </div>
+</div>
 {% endblock %}

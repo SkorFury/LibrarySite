@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Edit Book - Library</title>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 24px;
+        background: var(--surface, #f5f5f5);
+        border: 1px solid var(--border, #ddd);
+        border-radius: 12px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text, #e6eef6);
+    }
+    input, select, textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        background: var(--bg, #fff);
+        color: var(--text, #e6eef6);
+        box-sizing: border-box;
+    }
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        margin-right: 8px;
+    }
+    .btn-primary {
+        background: var(--primary, #007bff);
+        color: white;
+    }
+    .btn-secondary {
+        background: var(--secondary, #6c757d);
+        color: white;
+    }
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+    }
+    .cover-preview {
+        margin-top: 12px;
+        max-width: 200px;
+    }
+    .cover-preview img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid var(--border, #ddd);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<a href="{{ url_for('library.view_book', id=book.id) }}" style="display: inline-block; margin-bottom: 16px; color: var(--primary);">← Back to Book</a>
+
+<div class="form-container">
+    <h1>Edit Book</h1>
+    
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
+    {% if success %}
+    <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" value="{{ book.title }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="author">Author *</label>
+            <input type="text" id="author" name="author" value="{{ book.author }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="isbn">ISBN *</label>
+            <input type="text" id="isbn" name="isbn" value="{{ book.isbn }}" required maxlength="13">
+        </div>
+        
+        <div class="form-group">
+            <label for="publisher">Publisher</label>
+            <input type="text" id="publisher" name="publisher" value="{{ book.publisher or '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" id="year" name="year" value="{{ book.year or '' }}" min="1000" max="9999">
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" value="{{ book.category or '' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="copies">Total Copies</label>
+            <input type="number" id="copies" name="copies" value="{{ book.copies_total }}" min="1">
+            <small style="color: var(--muted);">Currently available: {{ book.copies_available }}</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description">{{ book.description or '' }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="cover_image">Book Cover Image</label>
+            {% if book.cover_image %}
+            <div class="cover-preview">
+                <p style="margin-bottom: 8px; font-size: 0.9em; color: var(--muted);">Current cover:</p>
+                <img src="{{ url_for('static', filename='images/books/' + book.cover_image) }}" alt="{{ book.title }}">
+            </div>
+            {% endif %}
+            <input type="file" id="cover_image" name="cover_image" accept="image/*" style="margin-top: 12px;">
+            <small style="color: var(--muted);">Upload a new cover image to replace the current one (PNG, JPG, GIF, SVG)</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Book</button>
+        <a href="{{ url_for('library.view_book', id=book.id) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

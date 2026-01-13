@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Manage Reservations - Admin</title>
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .reservation-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--surface, #f5f5f5);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .reservation-table th {
+        background: var(--primary, #007bff);
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    .reservation-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border, #ddd);
+        color: var(--text, #e6eef6);
+    }
+    .reservation-table tr:hover {
+        background: rgba(255,255,255,0.05);
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.85em;
+        font-weight: 600;
+        background: #fff3cd;
+        color: #856404;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <h1>Manage Reservations</h1>
+    
+    <h2>Pending Reservations ({{ pending_reservations|length }})</h2>
+    {% if pending_reservations %}
+    <table class="reservation-table">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>User</th>
+                <th>Reserved Date</th>
+                <th>Expires</th>
+                <th>Available Copies</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in pending_reservations %}
+            <tr>
+                <td>
+                    <strong>{{ reservation.book.title }}</strong><br>
+                    <small>{{ reservation.book.author }}</small>
+                </td>
+                <td>{{ reservation.user.username }}</td>
+                <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ reservation.expiry_date.strftime('%Y-%m-%d') if reservation.expiry_date else 'N/A' }}</td>
+                <td>{{ reservation.book.copies_available }} / {{ reservation.book.copies_total }}</td>
+                <td><span class="status-badge">PENDING</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No pending reservations.</p>
+    {% endif %}
+</div>
+{% endblock %}
