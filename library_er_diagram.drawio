@@ -1,0 +1,147 @@
+<mxfile host="app.diagrams.net" modified="2026-01-15T00:00:00.000Z" agent="5.0" version="22.1.16" etag="ER-Diagram-Library" type="device">
+  <diagram name="Library ER Diagram" id="library-er">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- User Entity -->
+        <mxCell id="user-entity" value="USER" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="120" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="user-attrs" value="&lt;b&gt;PK&lt;/b&gt; id&lt;br&gt;username&lt;br&gt;password_hash&lt;br&gt;role&lt;br&gt;profile_pic&lt;br&gt;email" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="120" y="120" width="200" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Book Entity -->
+        <mxCell id="book-entity" value="BOOK" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="book-attrs" value="&lt;b&gt;PK&lt;/b&gt; id&lt;br&gt;title&lt;br&gt;author&lt;br&gt;isbn&lt;br&gt;publisher&lt;br&gt;year&lt;br&gt;copies_total&lt;br&gt;copies_available&lt;br&gt;category&lt;br&gt;description&lt;br&gt;cover_image&lt;br&gt;date_added" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="520" y="120" width="200" height="190" as="geometry" />
+        </mxCell>
+        
+        <!-- Loan Entity -->
+        <mxCell id="loan-entity" value="LOAN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="320" y="400" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="loan-attrs" value="&lt;b&gt;PK&lt;/b&gt; id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; user_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; book_id&lt;br&gt;loan_date&lt;br&gt;due_date&lt;br&gt;return_date&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="200" height="110" as="geometry" />
+        </mxCell>
+        
+        <!-- Reservation Entity -->
+        <mxCell id="reservation-entity" value="RESERVATION" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="320" y="620" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-attrs" value="&lt;b&gt;PK&lt;/b&gt; id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; user_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; book_id&lt;br&gt;reservation_date&lt;br&gt;status&lt;br&gt;expiry_date" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="320" y="660" width="200" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Relationship: User to Loan -->
+        <mxCell id="user-loan-rel" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="user-attrs" target="loan-entity">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="300" as="sourcePoint" />
+            <mxPoint x="380" y="300" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="220" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-loan-card1" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="user-loan-rel">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="-10" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-loan-card2" value="N" style="resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="user-loan-rel">
+          <mxGeometry x="1" relative="1" as="geometry">
+            <mxPoint x="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-loan-label" value="makes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=2;" vertex="1" connectable="0" parent="user-loan-rel">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint x="-20" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relationship: Book to Loan -->
+        <mxCell id="book-loan-rel" value="" style="endArrow=none;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="book-attrs" target="loan-entity">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="300" as="sourcePoint" />
+            <mxPoint x="520" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-loan-card1" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="book-loan-rel">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="10" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-loan-card2" value="N" style="resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="book-loan-rel">
+          <mxGeometry x="1" relative="1" as="geometry">
+            <mxPoint x="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-loan-label" value="has" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=2;" vertex="1" connectable="0" parent="book-loan-rel">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint x="20" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relationship: User to Reservation -->
+        <mxCell id="user-res-rel" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="user-attrs" target="reservation-entity">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="500" as="sourcePoint" />
+            <mxPoint x="380" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="220" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-res-card1" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="user-res-rel">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="-10" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-res-card2" value="N" style="resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="user-res-rel">
+          <mxGeometry x="1" relative="1" as="geometry">
+            <mxPoint x="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-res-label" value="creates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=2;" vertex="1" connectable="0" parent="user-res-rel">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint x="-20" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relationship: Book to Reservation -->
+        <mxCell id="book-res-rel" value="" style="endArrow=none;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="book-attrs" target="reservation-entity">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="500" as="sourcePoint" />
+            <mxPoint x="520" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-res-card1" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="book-res-rel">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="10" y="20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-res-card2" value="N" style="resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=12;fontStyle=1;" connectable="0" vertex="1" parent="book-res-rel">
+          <mxGeometry x="1" relative="1" as="geometry">
+            <mxPoint x="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-res-label" value="for" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=2;" vertex="1" connectable="0" parent="book-res-rel">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint x="20" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
