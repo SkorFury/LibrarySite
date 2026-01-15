@@ -1,270 +1,271 @@
-# Library Management System
+# Bibliotēkas Pārvaldības Sistēma
 
-This is a comprehensive library management system built with Flask and SQLAlchemy that implements all required functionalities for managing a library's book collection and user loans.
+Šī ir visaptveroša bibliotēkas pārvaldības sistēma, kas izstrādāta ar Flask un SQLAlchemy, nodrošinot visas nepieciešamās funkcijas grāmatu kolekcijas un lietotāju aizņēmumu pārvaldībai.
 
-## Features
+## Funkcionalitātes
 
-### 1. Book Management (Grāmatu reģistrācija)
-- **Add Books**: Administrators can add new books with details:
-  - Title (Nosaukums)
-  - Author (Autors)
-  - ISBN
-  - Publisher (Izdevējs)
-  - Year (Gads)
-  - Category (Kategorija)
-  - Number of copies (Kopiju skaits)
-  - Description (Apraksts)
+### 1. Grāmatu pārvaldība
+- **Pievienot grāmatas**: Administratori var pievienot jaunas grāmatas ar šādām detaļām:
+   - Nosaukums
+   - Autors
+   - ISBN
+   - Izdevējs
+   - Gads
+   - Kategorija
+   - Kopiju skaits
+   - Apraksts
 
-- **Search Books**: Search by title, author, or ISBN
-- **Filter by Category**: Browse books by category
-- **Edit/Delete Books**: Administrators can update or remove books
+- **Meklēt grāmatas**: Meklēšana pēc nosaukuma, autora vai ISBN
+- **Filtrēt pēc kategorijas**: Pārlūkot grāmatas pēc kategorijas
+- **Rediģēt/dzēst grāmatas**: Administratori var atjaunināt vai dzēst grāmatas
 
-### 2. User Management (Lietotāju reģistrācija)
-- User registration and login system
-- User profiles with customizable settings
-- Two user roles:
-  - Regular users (can borrow and reserve books)
-  - Administrators (can manage books, users, loans, and reservations)
+### 2. Lietotāju pārvaldība
+- Lietotāju reģistrācija un pieteikšanās sistēma
+- Lietotāju profili ar pielāgojamiem iestatījumiem
+- Divas lietotāju lomas:
+   - Parastie lietotāji (var aizņemties un rezervēt grāmatas)
+   - Administratori (var pārvaldīt grāmatas, lietotājus, aizņēmumus un rezervācijas)
 
-### 3. Loan System (Aizņemšanas sistēma)
-- **Borrow Books**: Users can borrow available books
-- **Loan Period**: 14-day loan period
-- **Return Books**: Mark books as returned
-- **Track Status**: Active, returned, and overdue loans
-- **My Loans**: Users can view their current and past loans
-- **Admin Loan Management**: Administrators can view and manage all loans
+### 3. Aizņēmumu sistēma
+- **Aizņemties grāmatas**: Lietotāji var aizņemties pieejamās grāmatas
+- **Aizņēmuma periods**: 14 dienas
+- **Atgriezt grāmatas**: Atzīmēt grāmatas kā atgrieztas
+- **Statusa izsekošana**: Aktīvie, atgrieztie un kavētie aizņēmumi
+- **Mani aizņēmumi**: Lietotāji var skatīt savus pašreizējos un iepriekšējos aizņēmumus
+- **Administratora aizņēmumu pārvaldība**: Administratori var skatīt un pārvaldīt visus aizņēmumus
 
-### 4. Reservation System (Rezervācijas sistēma)
-- **Reserve Books**: Users can reserve books when all copies are borrowed
-- **Reservation Expiry**: Reservations expire after 7 days
-- **Auto-fulfillment**: Reservations are automatically marked as fulfilled when user borrows the book
-- **My Reservations**: Users can view and cancel their reservations
-- **Admin Reservation Management**: Administrators can view all pending reservations
+### 4. Rezervāciju sistēma
+- **Rezervēt grāmatas**: Lietotāji var rezervēt grāmatas, ja visas kopijas ir izsniegtas
+- **Rezervācijas termiņš**: Rezervācijas beidzas pēc 7 dienām
+- **Automātiska izpilde**: Rezervācijas tiek automātiski atzīmētas kā izpildītas, kad lietotājs aizņemas grāmatu
+- **Manas rezervācijas**: Lietotāji var skatīt un atcelt savas rezervācijas
+- **Administratora rezervāciju pārvaldība**: Administratori var skatīt visas neizpildītās rezervācijas
 
-## Data Structure and Models
+## Datu struktūra un modeļi
 
-### Database Schema
+### Datu bāzes shēma
 
-#### Book Model
+#### Grāmatas modelis
 ```python
-- id (Primary Key)
-- title (String, required)
-- author (String, required)
-- isbn (String, unique, required)
-- publisher (String, optional)
-- year (Integer, optional)
-- copies_total (Integer, default: 1)
-- copies_available (Integer, default: 1)
-- category (String, optional)
-- description (Text, optional)
-- date_added (DateTime, default: now)
+- id (Primārā atslēga)
+- title (Virkne, obligāts)
+- author (Virkne, obligāts)
+- isbn (Virkne, unikāls, obligāts)
+- publisher (Virkne, nav obligāts)
+- year (Vesels skaitlis, nav obligāts)
+- copies_total (Vesels skaitlis, noklusējums: 1)
+- copies_available (Vesels skaitlis, noklusējums: 1)
+- category (Virkne, nav obligāts)
+- description (Teksts, nav obligāts)
+- date_added (Datums/laiks, noklusējums: tagad)
 ```
 
-#### User Model
+
+#### Lietotāja modelis
 ```python
-- id (Primary Key)
-- username (String, unique, required)
-- password_hash (String, required)
-- email (String, optional)
-- role (String, default: 'user')
-- profile_pic (String, optional)
+- id (Primārā atslēga)
+- username (Virkne, unikāls, obligāts)
+- password_hash (Virkne, obligāts)
+- email (Virkne, nav obligāts)
+- role (Virkne, noklusējums: 'user')
+- profile_pic (Virkne, nav obligāts)
 ```
 
-#### Loan Model
+#### Aizņēmuma modelis
 ```python
-- id (Primary Key)
-- book_id (Foreign Key -> Book)
-- user_id (Foreign Key -> User)
-- loan_date (DateTime, default: now)
-- due_date (DateTime, required)
-- return_date (DateTime, nullable)
-- status (String: 'active', 'returned', 'overdue')
+- id (Primārā atslēga)
+- book_id (Ārējā atslēga -> Grāmata)
+- user_id (Ārējā atslēga -> Lietotājs)
+- loan_date (Datums/laiks, noklusējums: tagad)
+- due_date (Datums/laiks, obligāts)
+- return_date (Datums/laiks, var būt tukšs)
+- status (Virkne: 'active', 'returned', 'overdue')
 ```
 
-#### Reservation Model
+#### Rezervācijas modelis
 ```python
-- id (Primary Key)
-- book_id (Foreign Key -> Book)
-- user_id (Foreign Key -> User)
-- reservation_date (DateTime, default: now)
-- expiry_date (DateTime, nullable)
-- status (String: 'pending', 'fulfilled', 'cancelled')
+- id (Primārā atslēga)
+- book_id (Ārējā atslēga -> Grāmata)
+- user_id (Ārējā atslēga -> Lietotājs)
+- reservation_date (Datums/laiks, noklusējums: tagad)
+- expiry_date (Datums/laiks, var būt tukšs)
+- status (Virkne: 'pending', 'fulfilled', 'cancelled')
 ```
 
-### Relationships
-- Book ↔ Loan (One-to-Many)
-- User ↔ Loan (One-to-Many)
-- Book ↔ Reservation (One-to-Many)
-- User ↔ Reservation (One-to-Many)
+### Attiecības
+- Grāmata ↔ Aizņēmums (viens pret daudziem)
+- Lietotājs ↔ Aizņēmums (viens pret daudziem)
+- Grāmata ↔ Rezervācija (viens pret daudziem)
+- Lietotājs ↔ Rezervācija (viens pret daudziem)
 
-## Data Storage System
+## Datu glabāšanas sistēma
 
-### Technology Choice: SQL Database (SQLite)
+### Tehnoloģiju izvēle: SQL datubāze (SQLite)
 
-**Chosen System**: SQLite database with SQLAlchemy ORM
+**Izvēlētā sistēma**: SQLite datubāze ar SQLAlchemy ORM
 
-**Reasons for choosing SQL over alternatives**:
+**Kāpēc izvēlēties SQL, nevis alternatīvas**:
 
-1. **Data Consistency**: 
-   - ACID properties ensure data integrity
-   - Foreign key constraints maintain referential integrity
-   - Transactions prevent data corruption
+1. **Datu konsekvence**:
+   - ACID īpašības nodrošina datu integritāti
+   - Ārējo atslēgu ierobežojumi uztur saistību integritāti
+   - Transakcijas novērš datu bojājumus
 
-2. **Relationship Management**:
-   - Natural support for complex relationships (users, books, loans, reservations)
-   - Efficient JOIN operations for querying related data
-   - Easy to maintain data consistency across tables
+2. **Attiecību pārvaldība**:
+   - Dabisks atbalsts sarežģītām attiecībām (lietotāji, grāmatas, aizņēmumi, rezervācijas)
+   - Efektīvas JOIN operācijas saistīto datu vaicāšanai
+   - Viegli uzturēt datu konsekvenci starp tabulām
 
-3. **Scalability**:
-   - Can easily migrate to larger SQL databases (PostgreSQL, MySQL) as the library grows
-   - Indexed queries provide fast search performance
-   - Support for concurrent users
+3. **Mērogojamība**:
+   - Viegli migrēt uz lielākām SQL datubāzēm (PostgreSQL, MySQL), ja bibliotēka aug
+   - Indeksēti vaicājumi nodrošina ātru meklēšanu
+   - Atbalsts vairākiem vienlaicīgiem lietotājiem
 
-4. **Query Flexibility**:
-   - Complex queries with filtering, sorting, and aggregation
-   - Full-text search capabilities
-   - Easy to generate reports and statistics
+4. **Vaicājumu elastība**:
+   - Sarežģīti vaicājumi ar filtrēšanu, kārtošanu un apkopošanu
+   - Pilnteksta meklēšanas iespējas
+   - Viegli ģenerēt atskaites un statistiku
 
-**Comparison with alternatives**:
+**Salīdzinājums ar alternatīvām**:
 
-| Feature | SQL (SQLite) | Text Files | NoSQL |
-|---------|-------------|------------|-------|
-| Data Integrity | ✅ Strong | ❌ Weak | ⚠️ Moderate |
-| Relationships | ✅ Native | ❌ Manual | ⚠️ Complex |
-| Query Performance | ✅ Fast | ❌ Slow | ✅ Fast |
-| Consistency | ✅ ACID | ❌ None | ⚠️ Eventually |
-| Schema Enforcement | ✅ Yes | ❌ No | ❌ No |
-| Learning Curve | ⚠️ Moderate | ✅ Easy | ⚠️ Moderate |
+| Funkcija | SQL (SQLite) | Teksta faili | NoSQL |
+|----------|--------------|-------------|-------|
+| Datu integritāte | ✅ Spēcīga | ❌ Vāja | ⚠️ Vidēja |
+| Attiecības | ✅ Dzimtā | ❌ Manuāla | ⚠️ Sarežģīta |
+| Vaicājumu veiktspēja | ✅ Ātra | ❌ Lēna | ✅ Ātra |
+| Konsekvence | ✅ ACID | ❌ Nav | ⚠️ Pakāpeniska |
+| Shēmas kontrole | ✅ Jā | ❌ Nē | ❌ Nē |
+| Apguves līkne | ⚠️ Vidēja | ✅ Viegla | ⚠️ Vidēja |
 
-## Data Structure Implementation
+## Datu struktūru realizācija
 
-### Programming Language: Python
+### Programmēšanas valoda: Python
 
-**Key data structures used**:
+**Izmantotās galvenās datu struktūras**:
 
-1. **Classes (OOP)**:
-   - Book, User, Loan, Reservation classes using SQLAlchemy ORM
-   - Encapsulation of data and behavior
-   - Inheritance from `db.Model` base class
+1. **Klases (OOP)**:
+   - Grāmata, Lietotājs, Aizņēmums, Rezervācija (SQLAlchemy ORM)
+   - Datu un uzvedības kapsulēšana
+   - Mantots no `db.Model` bāzes klases
 
-2. **Dictionary/Hash Table**:
-   - Session management uses dictionaries
-   - Fast O(1) lookup for user data
-   - Form data handling with request.form dictionary
+2. **Vārdnīca/Hash tabula**:
+   - Sesiju pārvaldība izmanto vārdnīcas
+   - Ātra O(1) piekļuve lietotāju datiem
+   - Formu datu apstrāde ar request.form vārdnīcu
 
-3. **Lists/Arrays**:
-   - Query results returned as lists
-   - Efficient iteration for displaying collections
-   - Support for filtering and sorting
+3. **Saraksti/Masīvi**:
+   - Vaicājumu rezultāti tiek atgriezti kā saraksti
+   - Efektīva iterācija kolekciju attēlošanai
+   - Atbalsts filtrēšanai un kārtošanai
 
-### Key Functions
+### Galvenās funkcijas
 
-**Book Management**:
+**Grāmatu pārvaldība**:
 ```python
-def add_book()        # Add new book to library
-def edit_book(id)     # Update book information
-def delete_book(id)   # Remove book from catalog
-def view_book(id)     # Display book details
-def library()         # Search and browse books
+def add_book()        # Pievieno jaunu grāmatu bibliotēkai
+def edit_book(id)     # Atjaunina grāmatas informāciju
+def delete_book(id)   # Dzēš grāmatu no kataloga
+def view_book(id)     # Parāda grāmatas detaļas
+def library()         # Meklē un pārlūko grāmatas
 ```
 
-**Loan Management**:
+**Aizņēmumu pārvaldība**:
 ```python
-def borrow_book(id)   # Create new loan
-def return_book(id)   # Mark book as returned
-def my_loans()        # View user's loans
-def admin_loans()     # Admin view of all loans
+def borrow_book(id)   # Izveido jaunu aizņēmumu
+def return_book(id)   # Atzīmē grāmatu kā atgrieztu
+def my_loans()        # Skatīt lietotāja aizņēmumus
+def admin_loans()     # Administratora skats visiem aizņēmumiem
 ```
 
-**Reservation Management**:
+**Rezervāciju pārvaldība**:
 ```python
-def reserve_book(id)         # Create reservation
-def cancel_reservation(id)   # Cancel reservation
-def my_reservations()        # View user's reservations
-def admin_reservations()     # Admin view of all reservations
+def reserve_book(id)         # Izveido rezervāciju
+def cancel_reservation(id)   # Atceļ rezervāciju
+def my_reservations()        # Skatīt lietotāja rezervācijas
+def admin_reservations()     # Administratora skats visām rezervācijām
 ```
 
-## Search and Performance
+## Meklēšana un veiktspēja
 
-### Search Implementation
-- **Text Search**: Using SQL LIKE operator for flexible matching
-- **Filter by Category**: Exact match on category field
-- **Combined Search**: Search across multiple fields (title, author, ISBN)
-- **Performance**: Indexed columns for fast lookups
+### Meklēšanas realizācija
+- **Teksta meklēšana**: Izmanto SQL LIKE operatoru elastīgai atbilstībai
+- **Filtrēšana pēc kategorijas**: Precīza atbilstība kategorijas laukam
+- **Kombinētā meklēšana**: Meklēšana vairākos laukos (nosaukums, autors, ISBN)
+- **Veiktspēja**: Indeksēti lauki ātrai meklēšanai
 
-### Data Access Patterns
-- **O(1)** - User session lookup (dictionary)
-- **O(log n)** - Book search by ISBN (indexed)
-- **O(n)** - Category filtering (table scan)
-- **O(n log n)** - Sorted book listings
+### Datu piekļuves modeļi
+- **O(1)** - Lietotāja sesijas meklēšana (vārdnīca)
+- **O(log n)** - Grāmatas meklēšana pēc ISBN (indeksēts)
+- **O(n)** - Filtrēšana pēc kategorijas (tabulas skenēšana)
+- **O(n log n)** - Kārtotu grāmatu sarakstu iegūšana
 
-## Installation and Setup
+## Instalācija un uzstādīšana
 
-1. **Install Dependencies**:
+1. **Instalēt atkarības**:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. **Run the Application**:
+2. **Palaist lietotni**:
 ```bash
 python app.py
 ```
 
-3. **Access the Site**:
-   - Open browser to `http://127.0.0.1:5000`
-   - Default port: 5000
+3. **Piekļūt vietnei**:
+   - Atveriet pārlūkā `http://127.0.0.1:5000`
+   - Noklusējuma ports: 5000
 
-4. **Create Admin User**:
-   - First user should be created with administrator role
-   - Use the admin panel to create additional users
+4. **Izveidot administratora lietotāju**:
+   - Pirmais lietotājs jāizveido ar administratora lomu
+   - Izmantojiet administratora paneli, lai izveidotu papildu lietotājus
 
-## Usage
+## Lietošana
 
-### For Users:
-1. Register/Login to your account
-2. Browse the library catalog
-3. Borrow available books (14-day loan period)
-4. Reserve books when unavailable
-5. View your active loans and reservations
-6. Return books when finished
+### Lietotājiem:
+1. Reģistrējieties/piesakieties savā kontā
+2. Pārlūkojiet bibliotēkas katalogu
+3. Aizņemieties pieejamās grāmatas (14 dienas)
+4. Rezervējiet grāmatas, ja tās nav pieejamas
+5. Skatiet savus aktīvos aizņēmumus un rezervācijas
+6. Atgrieziet grāmatas pēc izlasīšanas
 
-### For Administrators:
-1. Add new books to the library
-2. Edit book information
-3. Manage user accounts
-4. Monitor all loans and overdue items
-5. View all reservations
-6. Delete books (only if no active loans)
+### Administratoriem:
+1. Pievienojiet jaunas grāmatas bibliotēkai
+2. Rediģējiet grāmatu informāciju
+3. Pārvaldiet lietotāju kontus
+4. Uzraugiet visus aizņēmumus un kavētos priekšmetus
+5. Skatiet visas rezervācijas
+6. Dzēsiet grāmatas (tikai, ja nav aktīvu aizņēmumu)
 
-## Technical Details
+## Tehniskā informācija
 
-### Session Management
-- Flask sessions store user authentication state
-- Secure password hashing with Werkzeug
-- Role-based access control
+### Sesiju pārvaldība
+- Flask sesijas glabā lietotāja autentifikācijas stāvokli
+- Droša paroļu hashēšana ar Werkzeug
+- Lomu balstīta piekļuves kontrole
 
-### Database Persistence
-- SQLite database file: `instance/users.db`
-- Data persists between sessions
-- Automatic table creation on first run
-- Migration support for schema changes
+### Datu bāzes noturība
+- SQLite datubāzes fails: `instance/users.db`
+- Dati saglabājas starp sesijām
+- Automātiska tabulu izveide pirmajā palaišanas reizē
+- Atbalsts shēmas migrācijām
 
-### Error Handling
-- Input validation on all forms
-- Duplicate ISBN prevention
-- Active loan checks before deletion
-- Overdue loan detection and marking
+### Kļūdu apstrāde
+- Ievades validācija visās formās
+- Dublikātu ISBN novēršana
+- Aktīvu aizņēmumu pārbaude pirms dzēšanas
+- Kavēto aizņēmumu noteikšana un atzīmēšana
 
-## Future Enhancements
+## Nākotnes uzlabojumi
 
-Possible improvements:
-- Email notifications for due dates
-- Barcode scanning for ISBN
-- Book cover images
-- Reading recommendations
-- Statistics dashboard
-- Export functionality
-- Mobile app integration
+Iespējamie uzlabojumi:
+- E-pasta paziņojumi par termiņiem
+- Svītrkodu skenēšana ISBN ievadei
+- Grāmatu vāku attēli
+- Lasīšanas ieteikumi
+- Statistikas panelis
+- Eksporta funkcionalitāte
+- Mobilās lietotnes integrācija
 
-## Author
-Developed as part of a library management system project demonstrating data structures, database management, and web application development.
+## Autors
+Izstrādāts kā bibliotēkas pārvaldības sistēmas projekts, demonstrējot datu struktūras, datubāzu pārvaldību un tīmekļa lietotņu izstrādi.
