@@ -126,17 +126,6 @@
    - Pilnteksta meklēšanas iespējas
    - Viegli ģenerēt atskaites un statistiku
 
-**Salīdzinājums ar alternatīvām**:
-
-| Funkcija | SQL (SQLite) | Teksta faili | NoSQL |
-|----------|--------------|-------------|-------|
-| Datu integritāte | ✅ Spēcīga | ❌ Vāja | ⚠️ Vidēja |
-| Attiecības | ✅ Dzimtā | ❌ Manuāla | ⚠️ Sarežģīta |
-| Vaicājumu veiktspēja | ✅ Ātra | ❌ Lēna | ✅ Ātra |
-| Konsekvence | ✅ ACID | ❌ Nav | ⚠️ Pakāpeniska |
-| Shēmas kontrole | ✅ Jā | ❌ Nē | ❌ Nē |
-| Apguves līkne | ⚠️ Vidēja | ✅ Viegla | ⚠️ Vidēja |
-
 ## Datu struktūru realizācija
 
 ### Programmēšanas valoda: Python
